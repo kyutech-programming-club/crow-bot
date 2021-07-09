@@ -6,7 +6,7 @@ import azure.functions as func
 from linebot import (
     LineBotApi, WebhookParser
 )
-from linebot.exceptions import InvalidArgumentError
+from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage
 )
