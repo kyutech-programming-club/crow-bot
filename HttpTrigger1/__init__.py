@@ -74,13 +74,16 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             longitude = req_loc['longitude']
             title = "ごみ"
 
+            if calcurate.omit_by_address(garbage_data, address):
             # DBに格納
-            garbage_tuple = (title, address, latitude, longitude)
-            garbage_sql = """INSERT INTO garbage (title, address, latitude, longitude) VALUES (?, ?, ?, ?)"""
-            cursor.execute(garbage_sql, garbage_tuple)
-            conn.commit()
+                garbage_tuple = (title, address, latitude, longitude)
+                garbage_sql = """INSERT INTO garbage (title, address, latitude, longitude) VALUES (?, ?, ?, ?)"""
+                cursor.execute(garbage_sql, garbage_tuple)
+                conn.commit()
 
-            text = '位置情報を登録しました'
+                text = '位置情報を登録しました'
+            else:
+                text = 'すでに登録済みデータがあるようです'
         else:
             text = '最初からやり直してください'
 
