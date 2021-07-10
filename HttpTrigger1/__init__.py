@@ -30,31 +30,41 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     if req_body['events'][0]['type'] == 'message':
-        if req_body['events'][0]['message']['type'] == 'text':
-            reply_token = req_body['events'][0]['replyToken']
-            req_message = req_body['events'][0]['message']['text']
-            message = "こんにちは"
+        reply_token = req_body['events'][0]['replyToken']
 
-            # これ以降に色々書いていく
+        if req_body['events'][0]['message']['type'] == 'location':
+            message = TextSendMessage(
+                text='位置情報を確認しました',
+            )
+
+        elif req_body['events'][0]['message']['type'] == 'text':
+            req_message = req_body['events'][0]['message']['text']
+            
             if req_message == "マップ":
                 title = "東京タワー"
                 address = "〒105-0011 東京都港区芝公園4-2-8"
                 latitude = 35.658581
                 longitude = 139.745433
-                line_bot.reply_message(
-                    reply_token,
-                    LocationSendMessage(
-                        title=title,
-                        address=address,
-                        latitude=latitude,
-                        longitude=longitude
-                    )
+                message = LocationSendMessage(
+                    title=title,
+                    address=address,
+                    latitude=latitude,
+                    longitude=longitude
+                )
+            else:
+                message = TextSendMessage(
+                    text="こんにちは"
                 )
 
-            line_bot.reply_message(
-                reply_token,
-                TextSendMessage(text=message)
+        else:
+            message = TextSendMessage(
+                text="aaaa"
             )
+
+        line_bot.reply_message(
+            reply_token,
+            message
+        )
 
     return func.HttpResponse(
         "OK",
