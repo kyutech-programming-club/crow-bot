@@ -86,6 +86,20 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # 前回"探す"が入力されたとき(状態2)
     elif state == 2:
         if req_body['events'][0]['message']['type'] == 'location':
+            # DBからGarbageを取り出し
+            garbage_sql = """SELECT * FROM garbage"""
+            garbage_data = cursor.execute(garbage_sql)
+
+            # 一番近いゴミを取り出す
+            req_loc = req_body['events'][0]['message']
+            latitude = req_loc['latitude']
+            longitude = req_loc['longitude']
+            current_location = (latitude, longitude)
+            garbage_tuple = calcurate.nearest_garbage(garbage_data, current_location)
+            logging.info(garbage_tuple)
+
+
+
             title = "東京タワー"
             address = "〒105-0011 東京都港区芝公園4-2-8"
             latitude = 35.658581
