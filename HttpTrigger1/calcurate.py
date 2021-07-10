@@ -7,5 +7,4 @@ def nearest_garbage(locations, cur_location):
         if min_dis > distance:
             min_dis = distance
             nearest_location = location
-
     return nearest_location
