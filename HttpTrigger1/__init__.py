@@ -37,11 +37,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
             # これ以降に色々書いていく
             if req_message == "マップ":
+                title = "東京タワー"
+                address = "〒105-0011 東京都港区芝公園4-2-8"
                 latitude = 35.658581
                 longitude = 139.745433
                 line_bot.reply_message(
                     reply_token,
                     LocationSendMessage(
+                        title=title
+                        address=address
                         latitude=latitude,
                         longitude=longitude
                     )
