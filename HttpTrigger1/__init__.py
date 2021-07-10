@@ -1,5 +1,6 @@
 import os
 import logging
+from calcurate import *
 
 import azure.functions as func
 
