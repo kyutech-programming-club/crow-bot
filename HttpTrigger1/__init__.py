@@ -23,6 +23,21 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     req_body = req.get_json()
     logging.info(req_body)
 
+    if not req_body['events']:
+        return func.HttpResponse(
+           "OK",
+            status_code=200
+        )
+
+    if req_body['events'][0]['type'] == 'message':
+        if req_body['events'][0]['message']['type'] == 'text':
+            reply_token = req_body['events'][0]['replyToken']
+            message = req_body['events'][0]['message']['text']
+            line_bot.reply_message(
+                reply_token,
+                TextSendMessage(text=message)
+            )
+
     return func.HttpResponse(
         "OK",
         status_code=200
