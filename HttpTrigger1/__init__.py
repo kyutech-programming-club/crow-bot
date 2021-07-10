@@ -30,18 +30,28 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     if req_body['events'][0]['type'] == 'message':
-        if req_body['events'][0]['message']['type'] == 'text':
-            reply_token = req_body['events'][0]['replyToken']
-            req_message = req_body['events'][0]['message']['text']
-            message = "こんにちは"
+        reply_token = req_body['events'][0]['replyToken']
 
-            # これ以降に色々書いていく
-
-
-            line_bot.reply_message(
-                reply_token,
-                TextSendMessage(text=message)
+        if req_body['events'][0]['message']['type'] == 'location':
+            message = TextSendMessage(
+                text='位置情報を確認しました',
             )
+
+        elif req_body['events'][0]['message']['type'] == 'text':
+            req_message = req_body['events'][0]['message']['text']
+            message = TextSendMessage(
+                text="こんにちは"
+            )
+
+        else:
+            message = TextSendMessage(
+                text="aaaa"
+            )
+
+        line_bot.reply_message(
+            reply_token,
+            message
+        )
 
     return func.HttpResponse(
         "OK",
