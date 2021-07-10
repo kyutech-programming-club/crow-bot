@@ -9,9 +9,8 @@ import azure.functions as func
 from linebot import (
     LineBotApi, WebhookParser
 )
-from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, LocationSendMessage
+    TextSendMessage, LocationSendMessage
 )
 
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
@@ -119,27 +118,24 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # 状態0の時
     elif state == 0:
         # もし送られてきたのが文字だったら
-        if req_body['events'][0]['type'] == 'message':
+        if req_body['events'][0]['message']['type'] == 'text':
+            req_message = req_body['events'][0]['message']['text']
 
-            if req_body['events'][0]['message']['type'] == 'text':
-                req_message = req_body['events'][0]['message']['text']
+            if req_message == "登録":
+                state = 1
+                text = "位置情報を送ってください"
+            elif req_message == "探す":
+                state = 2
+                text = "位置情報を送ってください"
+            else:
+                state = 0
+                text = "登録or探す"
 
-                if req_message == "登録":
-                    state = 1
-                    text = "位置情報を送ってください"
-                elif req_message == "探す":
-                    state = 2
-                    text = "位置情報を送ってください"
-                else:
-                    state = 0
-                    text = "登録or探す"
-
-                message = TextSendMessage(text=text)
+            message = TextSendMessage(text=text)
         # 文字以外の時
         else:
-            message = TextSendMessage(
-                text="aaaa"
-            )
+            text = "登録or探す"
+            message = TextSendMessage(text=text)
 
     # ユーザーの状態をDBに保存
     user_state = []
