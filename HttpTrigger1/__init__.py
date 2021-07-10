@@ -14,7 +14,8 @@ from linebot.models import (
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 CHANNEL_SECRET = os.getenv('CHANNEL_SECRET')
 
-line_bot = LineBotApi()
+line_bot = LineBotApi(ACCESS_TOKEN)
+webhook_parser = WebhookParser(CHANNEL_SECRET)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
