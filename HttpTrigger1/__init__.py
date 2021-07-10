@@ -98,12 +98,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             garbage_tuple = calcurate.nearest_garbage(garbage_data, current_location)
             logging.info(garbage_tuple)
 
+            # 取り出した位置情報を送信
+            title = garbage_tuple[1]
+            address = garbage_tuple[2]
+            latitude = garbage_tuple[3]
+            longitude = garbage_tuple[4]
 
-
-            title = "東京タワー"
-            address = "〒105-0011 東京都港区芝公園4-2-8"
-            latitude = 35.658581
-            longitude = 139.745433
             message = LocationSendMessage(
                 title=title,
                 address=address,
