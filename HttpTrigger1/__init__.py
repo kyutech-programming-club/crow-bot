@@ -1,6 +1,6 @@
 import os
 import logging
-from calcurate import *
+from HttpTrigger1 import calcurate
 
 import sqlite3
 
@@ -63,6 +63,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # 前回"登録"が入力されたとき(状態1)
     if state == 1:
         if req_body['events'][0]['message']['type'] == 'location':
+            # DBに格納する値を変数に入れる
+            req_loc = req_body['events'][0]['message']
+            address = req_loc['address']
+            latitude = req_loc['latitude']
+            longitude = req_loc['longitude']
+            title = "ごみ"
+
+            # DBに格納
+            garbage_tuple = (title, address, latitude, longitude)
+            garbage_sql = """INSERT INTO garbage (title, address, latitude, longitude) VALUES (?, ?, ?, ?)"""
+            cursor.execute(garbage_sql, garbage_tuple)
+            conn.commit()
+
             text = '位置情報を登録しました'
         else:
             text = '最初からやり直してください'
