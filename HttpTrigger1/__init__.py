@@ -1,6 +1,6 @@
 import os
 import logging
-from calcurate import *
+from HttpTrigger1 import calcurate
 
 import sqlite3
 
