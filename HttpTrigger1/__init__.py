@@ -44,8 +44,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 line_bot.reply_message(
                     reply_token,
                     LocationSendMessage(
-                        title=title
-                        address=address
+                        title=title,
+                        address=address,
                         latitude=latitude,
                         longitude=longitude
                     )
