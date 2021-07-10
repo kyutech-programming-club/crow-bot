@@ -134,9 +134,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             message = TextSendMessage(text=text)
         # 文字以外の時
         else:
-            message = TextSendMessage(
-                text="登録or探す"
-            )
+            text = "登録or探す"
+            message = TextSendMessage(text=text)
 
     # ユーザーの状態をDBに保存
     user_state = []
