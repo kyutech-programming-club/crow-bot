@@ -39,7 +39,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         elif req_body['events'][0]['message']['type'] == 'text':
             req_message = req_body['events'][0]['message']['text']
-            
+
             if req_message == "マップ":
                 title = "東京タワー"
                 address = "〒105-0011 東京都港区芝公園4-2-8"
