@@ -8,7 +8,7 @@ from linebot import (
 )
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage
+    MessageEvent, TextMessage, TextSendMessage, LocationSendMessage
 )
 
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
@@ -39,9 +39,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         elif req_body['events'][0]['message']['type'] == 'text':
             req_message = req_body['events'][0]['message']['text']
-            message = TextSendMessage(
-                text="こんにちは"
-            )
+            
+            if req_message == "マップ":
+                title = "東京タワー"
+                address = "〒105-0011 東京都港区芝公園4-2-8"
+                latitude = 35.658581
+                longitude = 139.745433
+                message = LocationSendMessage(
+                    title=title,
+                    address=address,
+                    latitude=latitude,
+                    longitude=longitude
+                )
+            else:
+                message = TextSendMessage(
+                    text="こんにちは"
+                )
 
         else:
             message = TextSendMessage(
