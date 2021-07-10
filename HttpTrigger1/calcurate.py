@@ -12,6 +12,7 @@ def nearest_garbage(locations, cur_location):
 def omit_by_address(locations, address):
     status = True
     for location in locations:
-        if address == location[1]:
+        if address == location[2]:
             status = False
+            break
     return status
