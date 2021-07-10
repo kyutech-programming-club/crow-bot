@@ -59,6 +59,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if cnt == 0:
         state = 0
 
+    if state == 1 or state == 2:
+        # DBからGarbageを取り出し
+        garbage_sql = """SELECT * FROM garbage"""
+        garbage_data = cursor.execute(garbage_sql)
+
     # 前回"登録"が入力されたとき(状態1)
     if state == 1:
         if req_body['events'][0]['message']['type'] == 'location':
@@ -85,10 +90,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # 前回"探す"が入力されたとき(状態2)
     elif state == 2:
         if req_body['events'][0]['message']['type'] == 'location':
-            # DBからGarbageを取り出し
-            garbage_sql = """SELECT * FROM garbage"""
-            garbage_data = cursor.execute(garbage_sql)
-
             # 一番近いゴミを取り出す
             req_loc = req_body['events'][0]['message']
             latitude = req_loc['latitude']
@@ -96,7 +97,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             current_location = (latitude, longitude)
             garbage_tuple = calcurate.nearest_garbage(garbage_data, current_location)
             logging.info(garbage_tuple)
-
             # 取り出した位置情報を送信
             title = garbage_tuple[1]
             address = garbage_tuple[2]
