@@ -10,7 +10,13 @@ from linebot import (
     LineBotApi, WebhookParser
 )
 from linebot.models import (
-    TextSendMessage, LocationSendMessage, TemplateSendMessage, MessageAction, ConfirmTemplate
+    TextSendMessage,
+    LocationSendMessage,
+    TemplateSendMessage,
+    MessageAction,
+    ConfirmTemplate,
+    LocationAction,
+    ButtonsTemplate
 )
 
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
@@ -126,39 +132,79 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
             if req_message == "登録":
                 state = 1
-                text = "位置情報を送ってください"
             elif req_message == "探す":
                 state = 2
-                text = "位置情報を送ってください"
 
-        # もし登録か探す以外のものが送られた時
-        if state == 0:
-            regi_action = MessageAction(
-                type="message",
-                label="登録",
-                text="登録"
+        # 登録か探すが送られた時
+        if state != 0:
+            share_action = LocationAction(
+                type="location",
+                label="はい"
             )
 
+            not_action = MessageAction(
+                type="message",
+                label="いいえ",
+                text="いいえ"
+            )
+
+            default_action = share_action
+            actions = [share_action, not_action]
+
+            image_url = "https://raw.githubusercontent.com/kyutech-programming-club/crow-bot/image/gomi_karasu.png"
+
+            buttons_temp = ButtonsTemplate(
+                type="buttons",
+                text="共有しますか？",
+                title="位置情報",
+                thumbnail_image_url=image_url,
+                image_aspect_ratio="rectangle",
+                image_size="cover",
+                image_background_color="#FFFFFF",
+                actions=actions,
+                default_action=default_action
+            )
+
+            message = TemplateSendMessage(
+                alt_text="This is a buttons template",
+                template=buttons_temp
+            )
+
+        # もし登録か探す以外のものが送られた時
+        else:
             ser_action = MessageAction(
                 type="message",
                 label="探す",
                 text="探す"
             )
 
-            actions = [regi_action, ser_action]
+            regi_action = MessageAction(
+                type="message",
+                label="登録",
+                text="登録"
+            )
 
-            confirm = ConfirmTemplate(
-                type="confirm",
-                text="二者択一",
-                actions=actions
+            default_action = ser_action
+            actions = [ser_action, regi_action]
+
+            image_url = "https://raw.githubusercontent.com/kyutech-programming-club/crow-bot/image/gomisuteba_kitanai.png"
+
+            buttons_temp = ButtonsTemplate(
+                type="buttons",
+                title="ごみ",
+                text="探す？登録する？",
+                thumbnail_image_url=image_url,
+                image_aspect_ratio="rectangle",
+                image_size="cover",
+                image_background_color="#FFFFFF",
+                actions=actions,
+                default_action=default_action
             )
 
             message = TemplateSendMessage(
-                alt_text="This is a confirm template",
-                template=confirm
+                alt_text="This is a buttons template",
+                template=buttons_temp
             )
-        else:
-            message = TextSendMessage(text=text)
 
     logging.info(message)
 
