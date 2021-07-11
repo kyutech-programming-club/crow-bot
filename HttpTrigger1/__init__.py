@@ -10,7 +10,7 @@ from linebot import (
     LineBotApi, WebhookParser
 )
 from linebot.models import (
-    TextSendMessage, LocationSendMessage
+    TextSendMessage, LocationSendMessage, TemplateSendMessage, MessageAction, ConfirmTemplate
 )
 
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
@@ -130,15 +130,37 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             elif req_message == "探す":
                 state = 2
                 text = "位置情報を送ってください"
-            else:
-                state = 0
-                text = "登録or探す"
 
-            message = TextSendMessage(text=text)
-        # 文字以外の時
+        # もし登録か探す以外のものが送られた時
+        if state == 0:
+            regi_action = MessageAction(
+                type="message",
+                label="登録",
+                text="登録"
+            )
+
+            ser_action = MessageAction(
+                type="message",
+                label="探す",
+                text="探す"
+            )
+
+            actions = [regi_action, ser_action]
+
+            confirm = ConfirmTemplate(
+                type="confirm",
+                text="二者択一",
+                actions=actions
+            )
+
+            message = TemplateSendMessage(
+                alt_text="This is a confirm template",
+                template=confirm
+            )
         else:
-            text = "登録or探す"
             message = TextSendMessage(text=text)
+
+    logging.info(message)
 
     # ユーザーの状態をDBに保存
     user_state = []
